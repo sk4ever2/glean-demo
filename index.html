@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Outcomes Manager — Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root {
+  --glean-blue: #343CED;
+  --glean-green: #D8FD49;
+  --glean-oatmeal: #F6F3EB;
+  --glean-black: #000000;
+  --glean-white: #FFFFFF;
+  --glean-blue-hover: #2530d4;
+  --glean-blue-light: #EAEBFD;
+  --glean-blue-mid: #C5C7FA;
+  --text-primary: #0D0D0D;
+  --text-secondary: #4A4A4A;
+  --text-tertiary: #8A8A8A;
+  --border: rgba(0,0,0,0.10);
+  --border-strong: rgba(0,0,0,0.18);
+  --bg-card: #FFFFFF;
+  --bg-hover: #F0EDE5;
+  --red: #C0392B;
+  --red-bg: #FDECEB;
+  --red-text: #8B1A12;
+  --amber: #8B5E00;
+  --amber-bg: #FEF3DC;
+  --amber-text: #6B4500;
+  --green-dark: #2D5A00;
+  --green-bg: #EDF7DA;
+  --green-text: #2D5A00;
+  --font: 'DM Sans', sans-serif;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--glean-oatmeal);
+  color: var(--text-primary);
+  font-size: 14px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── TOP NAV ─── */
+.topnav {
+  background: var(--glean-black);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  gap: 16px;
+}
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.glean-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.glean-logo svg { height: 22px; }
+.nav-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255,255,255,0.2);
+}
+.nav-product-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.01em;
+}
+.nav-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.nav-tabs {
+  display: flex;
+  gap: 2px;
+  background: rgba(255,255,255,0.08);
+  padding: 3px;
+  border-radius: var(--radius);
+}
+.nav-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.6);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  user-select: none;
+  border: none;
+  background: transparent;
+  font-family: var(--font);
+}
+.nav-tab:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.08); }
+.nav-tab.active { background: var(--glean-blue); color: var(--glean-white); }
+.nav-tab.active.has-alert::after {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--glean-green);
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 2px;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.api-label { font-size: 12px; color: rgba(255,255,255,0.45); white-space: nowrap; }
+.api-input {
+  font-family: monospace;
+  font-size: 11px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.9);
+  width: 190px;
+}
+.api-input:focus { outline: none; border-color: var(--glean-blue); }
+.api-input::placeholder { color: rgba(255,255,255,0.25); }
+
+/* ─── ALERT BANNER ─── */
+.alert-banner {
+  background: var(--glean-blue);
+  color: white;
+  font-size: 12px;
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.alert-banner strong { font-weight: 600; }
+.alert-banner .green-dot {
+  width: 8px; height: 8px;
+  background: var(--glean-green);
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+/* ─── LAYOUT ─── */
+.layout {
+  max-width: 1160px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 24px 40px;
+  flex: 1;
+}
+
+/* ─── PAGE SYSTEM ─── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ─── PAGE HEADER ─── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.page-header-left h1 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.page-header-left p { font-size: 13px; color: var(--text-secondary); }
+.header-chips { display: flex; gap: 8px; }
+
+/* ─── BADGES ─── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.01em;
+}
+.b-red { background: var(--red-bg); color: var(--red-text); }
+.b-amber { background: var(--amber-bg); color: var(--amber-text); }
+.b-green { background: var(--green-bg); color: var(--green-text); }
+.b-blue { background: var(--glean-blue-light); color: var(--glean-blue); }
+.b-dark { background: var(--glean-black); color: var(--glean-green); }
+
+/* ─── CARDS ─── */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-header-left { display: flex; flex-direction: column; gap: 2px; }
+.card-title { font-size: 14px; font-weight: 600; }
+.card-sub { font-size: 12px; color: var(--text-secondary); }
+
+/* ─── METRICS ─── */
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--glean-blue);
+}
+.metric-card.warn::before { background: #EF9F27; }
+.metric-card.ok::before { background: #5AA84A; }
+.metric-card.alert::before { background: var(--glean-green); }
+.metric-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 8px;
+}
+.metric-value {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.metric-delta {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-secondary);
+}
+.delta-up { color: var(--green-dark); }
+.delta-down { color: var(--red); }
+
+/* ─── TABLE ─── */
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  background: #FAFAF7;
+}
+tbody td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  vertical-align: middle;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr { cursor: pointer; transition: background 0.1s; }
+tbody tr:hover td { background: #FAFAF7; }
+.acct-name { font-weight: 600; font-size: 13px; }
+.acct-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+.health-wrap { display: flex; align-items: center; gap: 8px; }
+.health-bar {
+  width: 52px; height: 4px;
+  background: #E8E5DD;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.health-fill { height: 100%; border-radius: 4px; }
+.h-num { font-size: 13px; font-weight: 600; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+  background: transparent;
+  font-family: var(--font);
+}
+.chip:hover { background: var(--glean-blue); color: white; border-color: var(--glean-blue); }
+
+/* ─── WEEK GRID ─── */
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.day-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.day-header {
+  padding: 12px 14px;
+  background: var(--glean-black);
+}
+.day-name { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.08em; }
+.day-theme { font-size: 13px; font-weight: 600; color: var(--glean-green); margin-top: 2px; }
+.day-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+.task { font-size: 11.5px; color: var(--text-secondary); line-height: 1.5; display: flex; gap: 7px; }
+.task i { font-size: 14px; flex-shrink: 0; margin-top: 1px; color: var(--glean-blue); }
+.agent-tag {
+  display: inline-block;
+  margin-top: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--glean-blue-light);
+  color: var(--glean-blue);
+  letter-spacing: 0.01em;
+}
+
+/* ─── AGENT CARDS ─── */
+.agent-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.agent-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.agent-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.agent-icon {
+  width: 36px; height: 36px;
+  border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+.agent-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.agent-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 10px; }
+.agent-meta { font-size: 11px; color: var(--text-tertiary); display: flex; align-items: center; gap: 5px; }
+
+/* ─── DEMO ─── */
+.demo-grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.input-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.input-panel-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+select, textarea {
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 9px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--glean-oatmeal);
+  color: var(--text-primary);
+  width: 100%;
+  transition: border-color 0.12s, box-shadow 0.12s;
+  appearance: auto;
+}
+select:focus, textarea:focus { outline: none; border-color: var(--glean-blue); box-shadow: 0 0 0 3px rgba(52,60,237,0.1); }
+textarea { height: 92px; resize: none; line-height: 1.55; }
+
+.run-btn {
+  background: var(--glean-blue);
+  color: var(--glean-white);
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.15s, transform 0.1s;
+  width: 100%;
+  letter-spacing: 0.01em;
+}
+.run-btn:hover { background: var(--glean-blue-hover); transform: translateY(-1px); }
+.run-btn:active { transform: translateY(0); }
+.run-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.guardrails {
+  background: var(--glean-blue-light);
+  border: 1px solid var(--glean-blue-mid);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font-size: 11.5px;
+  color: var(--glean-blue);
+  line-height: 1.6;
+}
+.guardrails strong { font-weight: 600; }
+
+.output-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  min-height: 460px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.output-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FAFAF7;
+}
+.output-body { padding: 20px; flex: 1; overflow-y: auto; }
+
+.output-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 340px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  text-align: center;
+  gap: 10px;
+  line-height: 1.6;
+}
+.placeholder-icon {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--glean-oatmeal);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}
+
+.thinking {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 340px;
+  gap: 14px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.dots { display: flex; gap: 5px; }
+.dots span {
+  width: 8px; height: 8px;
+  background: var(--glean-blue);
+  border-radius: 50%;
+  animation: bounce 1.2s infinite;
+}
+.dots span:nth-child(2) { animation-delay: 0.18s; }
+.dots span:nth-child(3) { animation-delay: 0.36s; }
+@keyframes bounce { 0%,80%,100%{transform:translateY(0);opacity:0.3} 40%{transform:translateY(-7px);opacity:1} }
+
+.output-content { font-size: 13px; line-height: 1.75; }
+.out-section { margin-bottom: 18px; }
+.out-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+.out-section p { margin-bottom: 6px; color: var(--text-primary); }
+.out-section ul { padding-left: 18px; }
+.out-section li { margin-bottom: 5px; color: var(--text-primary); }
+
+.escalation-box {
+  background: var(--red-bg);
+  border: 1px solid #FAC4BE;
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--red-text);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 16px;
+  line-height: 1.5;
+}
+.escalation-box i { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+/* ─── ARCHITECTURE ─── */
+.arch-layer { margin-bottom: 24px; }
+.arch-layer-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.arch-layer-title span {
+  background: var(--glean-black);
+  color: var(--glean-green);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.arch-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.arch-box {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+}
+.arch-box.trigger { background: var(--amber-bg); }
+.arch-box.model { background: var(--glean-blue-light); color: var(--glean-blue); }
+.arch-box.rag { background: var(--green-bg); color: var(--green-dark); }
+.arch-box.out { background: var(--glean-oatmeal); }
+.arch-arrow { color: var(--text-tertiary); font-size: 16px; }
+.arch-note {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  padding: 6px 10px;
+  background: var(--glean-oatmeal);
+  border-radius: var(--radius);
+  line-height: 1.55;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+/* ─── DIVIDER ─── */
+.section-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0;
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="nav-brand">
+    <div class="glean-logo">
+      <!-- Glean wordmark SVG recreation using brand colors -->
+      <svg viewBox="0 0 80 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <text x="0" y="19" font-family="DM Sans, sans-serif" font-weight="700" font-size="20" fill="#FFFFFF" letter-spacing="-0.5">glean</text>
+      </svg>
+    </div>
+    <div class="nav-divider"></div>
+    <span class="nav-product-name">AI Outcomes Manager</span>
+  </div>
+
+  <div class="nav-center">
+    <div class="nav-tabs">
+      <button class="nav-tab active has-alert" onclick="switchPage('portfolio', this)">
+        <i class="ti ti-layout-dashboard"></i> Portfolio
+      </button>
+      <button class="nav-tab" onclick="switchPage('rhythm', this)">
+        <i class="ti ti-calendar-week"></i> Weekly Rhythm
+      </button>
+      <button class="nav-tab" onclick="switchPage('demo', this)">
+        <i class="ti ti-robot"></i> Agent Demo
+      </button>
+      <button class="nav-tab" onclick="switchPage('arch', this)">
+        <i class="ti ti-sitemap"></i> Architecture
+      </button>
+    </div>
+  </div>
+
+  <div class="nav-right">
+    <span class="api-label">API Key</span>
+    <input class="api-input" type="password" id="api-key" placeholder="sk-ant-..." />
+  </div>
+</nav>
+
+<!-- ALERT BANNER -->
+<div class="alert-banner">
+  <div class="green-dot"></div>
+  <strong>2 accounts at risk</strong> — Arkwright Financial (health: 31) and Solaris Health (health: 42) need immediate attention. Click an account to generate an EBR.
+</div>
+
+<div class="layout">
+
+  <!-- ══ PORTFOLIO PAGE ══ -->
+  <div class="page active" id="page-portfolio">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1>Portfolio health</h1>
+        <p>Week of May 19, 2026 · Central region · 10 enterprise accounts</p>
+      </div>
+      <div class="header-chips">
+        <span class="badge b-red"><i class="ti ti-alert-circle"></i> 2 at risk</span>
+        <span class="badge b-amber"><i class="ti ti-alert-triangle"></i> 3 need attention</span>
+        <span class="badge b-green"><i class="ti ti-circle-check"></i> 5 healthy</span>
+      </div>
+    </div>
+
+    <div class="metrics-row">
+      <div class="metric-card warn">
+        <div class="metric-label">Avg health score</div>
+        <div class="metric-value">71</div>
+        <div class="metric-delta delta-down"><i class="ti ti-trending-down"></i> −4 vs last week</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">QBRs due (30d)</div>
+        <div class="metric-value">3</div>
+        <div class="metric-delta">Arkwright, NovaBridge, Crestline</div>
+      </div>
+      <div class="metric-card alert">
+        <div class="metric-label">Expansion signals</div>
+        <div class="metric-value">4</div>
+        <div class="metric-delta delta-up"><i class="ti ti-trending-up"></i> 2 new this week</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Exec touchpoints</div>
+        <div class="metric-value">6/10</div>
+        <div class="metric-delta delta-down">4 accounts overdue >30d</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-title">Account portfolio</div>
+          <div class="card-sub">Click any row to launch the EBR Agent for that account</div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Account</th>
+            <th>Health</th>
+            <th>Usage trend</th>
+            <th>Last exec touch</th>
+            <th>AI signal</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr onclick="goToDemo('arkwright')">
+            <td><div class="acct-name">Arkwright Financial</div><div class="acct-sub">Series C · 1,200 seats · Renewal in 90d</div></td>
+            <td><div class="health-wrap"><div class="health-bar"><div class="health-fill" style="width:31%;background:#C0392B"></div></div><span class="h-num" style="color:#C0392B">31</span></div></td>
+            <td><span style="color:#C0392B;font-weight:500">▼ −18% WoW</span></td>
+            <td><span style="color:#C0392B;font-weight:500">47 days ago</span></td>
+            <td><span class="badge b-red">Churn risk</span></td>
+            <td><button class="chip" onclick="event.stopPropagation();goToDemo('arkwright')"><i class="ti ti-file-analytics"></i> Generate EBR</button></td>
+          </tr>
+          <tr onclick="goToDemo('solaris')">
+            <td><div class="acct-name">Solaris Health</div><div class="acct-sub">Enterprise · 3,400 seats · Renewal in 120d</div></td>
+            <td><div class="health-wrap"><div class="health-bar"><div class="health-fill" style="width:42%;background:#D4790A"></div></div><span class="h-num" style="color:#D4790A">42</span></div></td>
+            <td><span style="color:#D4790A;font-weight:500">▼ −9% WoW</span></td>
+            <td><span style="color:#D4790A;font-weight:500">31 days ago</span></td>
+            <td><span class="badge b-amber">Exec gap</span></td>
+            <td><button class="chip" onclick="event.stopPropagation();goToDemo('solaris')"><i class="ti ti-calendar"></i> Schedule QBR</button></td>
+          </tr>
+          <tr>
+            <td><div class="acct-name">NovaBridge Logistics</div><div class="acct-sub">Mid-market · 680 seats</div></td>
+            <td><div class="health-wrap"><div class="health-bar"><div class="health-fill" style="width:58%;background:#D4790A"></div></div><span class="h-num" style="color:#D4790A">58</span></div></td>
+            <td><span style="color:var(--text-secondary)">▶ Flat</span></td>
+            <td><span style="color:var(--text-secondary)">22 days ago</span></td>
+            <td><span class="badge b-amber">Low adoption</span></td>
+            <td><button class="chip"><i class="ti ti-users"></i> Adoption workshop</button></td>
+          </tr>
+          <tr onclick="goToDemo('crestline')">
+            <td><div class="acct-name">Crestline Capital</div><div class="acct-sub">Enterprise · 2,100 seats · Renewal in 180d</div></td>
+            <td><div class="health-wrap"><div class="health-bar"><div class="health-fill" style="width:74%;background:#343CED"></div></div><span class="h-num" style="color:#343CED">74</span></div></td>
+            <td><span style="color:var(--green-dark);font-weight:500">▲ +6% WoW</span></td>
+            <td><span style="color:var(--text-secondary)">8 days ago</span></td>
+            <td><span class="badge b-blue">Expansion signal</span></td>
+            <td><button class="chip" onclick="event.stopPropagation();goToDemo('crestline')"><i class="ti ti-trending-up"></i> Expansion brief</button></td>
+          </tr>
+          <tr>
+            <td><div class="acct-name">Meridian Tech</div><div class="acct-sub">Series D · 900 seats</div></td>
+            <td><div class="health-wrap"><div class="health-bar"><div class="health-fill" style="width:82%;background:#3A8A2A"></div></div><span class="h-num" style="color:#3A8A2A">82</span></div></td>
+            <td><span style="color:var(--green-dark);font-weight:500">▲ +11% WoW</span></td>
+            <td><span style="color:var(--text-secondary)">5 days ago</span></td>
+            <td><span class="badge b-green">Healthy</span></td>
+            <td><button class="chip"><i class="ti ti-star"></i> Case study</button></td>
+          </tr>
+          <tr onclick="goToDemo('optera')">
+            <td><div class="acct-name">Optera Systems</div><div class="acct-sub">Enterprise · 4,200 seats · Renewal in 240d</div></td>
+            <td><div class="health-wrap"><div class="health-bar"><div class="health-fill" style="width:88%;background:#3A8A2A"></div></div><span class="h-num" style="color:#3A8A2A">88</span></div></td>
+            <td><span style="color:var(--green-dark);font-weight:500">▲ +8% WoW</span></td>
+            <td><span style="color:var(--text-secondary)">3 days ago</span></td>
+            <td><span class="badge b-blue">Expansion signal</span></td>
+            <td><button class="chip" onclick="event.stopPropagation();goToDemo('optera')"><i class="ti ti-trending-up"></i> Upsell brief</button></td>
+          </tr>
+          <tr>
+            <td><div class="acct-name">Denali Insurance</div><div class="acct-sub">Mid-market · 540 seats</div></td>
+            <td><div class="health-wrap"><div class="health-bar"><div class="health-fill" style="width:65%;background:#D4790A"></div></div><span class="h-num" style="color:#D4790A">65</span></div></td>
+            <td><span style="color:var(--text-secondary)">▶ Flat</span></td>
+            <td><span style="color:#D4790A;font-weight:500">28 days ago</span></td>
+            <td><span class="badge b-amber">Exec gap</span></td>
+            <td><button class="chip"><i class="ti ti-mail"></i> Exec outreach</button></td>
+          </tr>
+          <tr>
+            <td><div class="acct-name">Talaris Manufacturing</div><div class="acct-sub">Enterprise · 1,800 seats</div></td>
+            <td><div class="health-wrap"><div class="health-bar"><div class="health-fill" style="width:79%;background:#343CED"></div></div><span class="h-num" style="color:#343CED">79</span></div></td>
+            <td><span style="color:var(--green-dark);font-weight:500">▲ +4% WoW</span></td>
+            <td><span style="color:var(--text-secondary)">12 days ago</span></td>
+            <td><span class="badge b-green">Healthy</span></td>
+            <td><button class="chip"><i class="ti ti-phone"></i> Check-in</button></td>
+          </tr>
+          <tr>
+            <td><div class="acct-name">Frontline Retail</div><div class="acct-sub">Series B · 420 seats</div></td>
+            <td><div class="health-wrap"><div class="health-bar"><div class="health-fill" style="width:71%;background:#343CED"></div></div><span class="h-num" style="color:#343CED">71</span></div></td>
+            <td><span style="color:var(--green-dark);font-weight:500">▲ +2% WoW</span></td>
+            <td><span style="color:var(--text-secondary)">18 days ago</span></td>
+            <td><span class="badge b-blue">Expansion signal</span></td>
+            <td><button class="chip"><i class="ti ti-trending-up"></i> Growth call</button></td>
+          </tr>
+          <tr>
+            <td><div class="acct-name">Vantage Energy</div><div class="acct-sub">Enterprise · 2,800 seats</div></td>
+            <td><div class="health-wrap"><div class="health-bar"><div class="health-fill" style="width:85%;background:#3A8A2A"></div></div><span class="h-num" style="color:#3A8A2A">85</span></div></td>
+            <td><span style="color:var(--green-dark);font-weight:500">▲ +7% WoW</span></td>
+            <td><span style="color:var(--text-secondary)">6 days ago</span></td>
+            <td><span class="badge b-green">Healthy</span></td>
+            <td><button class="chip"><i class="ti ti-presentation"></i> QBR prep</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ WEEKLY RHYTHM PAGE ══ -->
+  <div class="page" id="page-rhythm">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1>Weekly operating rhythm</h1>
+        <p>Five structured days · five agents · zero dropped signals</p>
+      </div>
+    </div>
+
+    <div class="week-grid">
+      <div class="day-card">
+        <div class="day-header"><div class="day-name">Monday</div><div class="day-theme">Signal scan</div></div>
+        <div class="day-body">
+          <div class="task"><i class="ti ti-robot"></i><div>Health agent scans all 10 accounts — usage drops, exec gaps, churn signals<div class="agent-tag">Health Monitor Agent</div></div></div>
+          <div class="task"><i class="ti ti-bell"></i><div>Triage alerts, prioritize top 3 accounts needing action</div></div>
+        </div>
+      </div>
+      <div class="day-card">
+        <div class="day-header"><div class="day-name">Tuesday</div><div class="day-theme">Deep dives</div></div>
+        <div class="day-body">
+          <div class="task"><i class="ti ti-file-analytics"></i><div>EBR agent drafts executive briefings for at-risk accounts<div class="agent-tag">EBR Generator Agent</div></div></div>
+          <div class="task"><i class="ti ti-phone"></i><div>Customer calls with flagged accounts</div></div>
+        </div>
+      </div>
+      <div class="day-card">
+        <div class="day-header"><div class="day-name">Wednesday</div><div class="day-theme">Exec comms</div></div>
+        <div class="day-body">
+          <div class="task"><i class="ti ti-mail"></i><div>Outreach agent drafts emails for accounts with exec gap >30d<div class="agent-tag">Exec Outreach Agent</div></div></div>
+          <div class="task"><i class="ti ti-users"></i><div>Internal AE sync on expansion opportunities</div></div>
+        </div>
+      </div>
+      <div class="day-card">
+        <div class="day-header"><div class="day-name">Thursday</div><div class="day-theme">Adoption</div></div>
+        <div class="day-body">
+          <div class="task"><i class="ti ti-chart-bar"></i><div>Adoption agent identifies underutilized features by team<div class="agent-tag">Adoption Insight Agent</div></div></div>
+          <div class="task"><i class="ti ti-presentation"></i><div>Enablement sessions for low-adoption accounts</div></div>
+        </div>
+      </div>
+      <div class="day-card">
+        <div class="day-header"><div class="day-name">Friday</div><div class="day-theme">Expansion</div></div>
+        <div class="day-body">
+          <div class="task"><i class="ti ti-trending-up"></i><div>Expansion agent surfaces upsell signals from usage patterns<div class="agent-tag">Expansion Signal Agent</div></div></div>
+          <div class="task"><i class="ti ti-report"></i><div>Weekly portfolio summary for manager review</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:4px">
+      <div style="font-size:14px;font-weight:600;margin-bottom:14px">Agent roster</div>
+      <div class="agent-grid">
+        <div class="agent-card">
+          <div class="agent-icon" style="background:var(--red-bg)"><i class="ti ti-heartbeat" style="color:var(--red)"></i></div>
+          <div class="agent-name">Health Monitor Agent</div>
+          <div class="agent-desc">Scans account signals weekly — usage trends, login frequency, exec engagement gaps, support tickets. Outputs a prioritized risk list with recommended next actions.</div>
+          <div class="agent-meta"><i class="ti ti-clock"></i> Mon 7am · Router: Haiku → Analysis: Sonnet</div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-icon" style="background:var(--glean-blue-light)"><i class="ti ti-file-analytics" style="color:var(--glean-blue)"></i></div>
+          <div class="agent-name">EBR Generator Agent</div>
+          <div class="agent-desc">Retrieves account history, usage metrics, and success stories from Glean index. Generates a structured executive business review tailored to account tier and industry.</div>
+          <div class="agent-meta"><i class="ti ti-clock"></i> On-demand or Tue trigger · Model: Sonnet</div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-icon" style="background:var(--amber-bg)"><i class="ti ti-mail-forward" style="color:var(--amber)"></i></div>
+          <div class="agent-name">Exec Outreach Agent</div>
+          <div class="agent-desc">Drafts personalized exec outreach emails when last touchpoint exceeds 30 days. Pulls account context, recent wins, and relevant Glean product news to personalize each message.</div>
+          <div class="agent-meta"><i class="ti ti-clock"></i> Wed trigger · Guardrail: no fabricated metrics</div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-icon" style="background:var(--green-bg)"><i class="ti ti-chart-dots" style="color:var(--green-dark)"></i></div>
+          <div class="agent-name">Expansion Signal Agent</div>
+          <div class="agent-desc">Monitors usage patterns for team-level adoption spikes and feature exploration signaling expansion readiness. Routes to AE with a one-page brief.</div>
+          <div class="agent-meta"><i class="ti ti-clock"></i> Fri · Fallback: flags low-confidence for human review</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AGENT DEMO PAGE ══ -->
+  <div class="page" id="page-demo">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1>EBR Generator Agent</h1>
+        <p>Live demo — enter your API key above, select an account, and run a real AI-generated executive briefing</p>
+      </div>
+      <span class="badge b-dark"><i class="ti ti-circle"></i> Live · Claude Sonnet</span>
+    </div>
+
+    <div class="demo-grid">
+      <div class="input-panel">
+        <div class="input-panel-title"><i class="ti ti-adjustments" style="color:var(--glean-blue)"></i> Agent inputs</div>
+
+        <div class="field">
+          <label>Account</label>
+          <select id="acct-select">
+            <option value="arkwright">Arkwright Financial — at risk (health: 31)</option>
+            <option value="solaris">Solaris Health — exec gap (health: 42)</option>
+            <option value="crestline">Crestline Capital — expansion signal (health: 74)</option>
+            <option value="optera">Optera Systems — healthy (health: 88)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Account context</label>
+          <textarea id="acct-context">Usage dropped 18% over 3 weeks. Last exec contact 47 days ago. Renewal in 90 days. Champion recently changed roles internally.</textarea>
+        </div>
+
+        <div class="field">
+          <label>Output type</label>
+          <select id="output-type">
+            <option value="ebr">Executive Business Review (EBR)</option>
+            <option value="risk">Risk mitigation brief</option>
+            <option value="expansion">Expansion opportunity brief</option>
+          </select>
+        </div>
+
+        <button class="run-btn" id="run-btn" onclick="runAgent()">
+          <i class="ti ti-player-play"></i> Run agent
+        </button>
+
+        <div class="guardrails">
+          <strong>Active guardrails:</strong> No fabricated metrics · Source citations required · Escalation trigger if renewal ≤90d · [NEEDS VERIFICATION] if context is thin
+        </div>
+      </div>
+
+      <div class="output-panel">
+        <div class="output-header">
+          <div class="card-title">Agent output</div>
+          <span class="badge b-blue" id="output-status">Waiting</span>
+        </div>
+        <div class="output-body" id="output-body">
+          <div class="output-placeholder">
+            <div class="placeholder-icon"><i class="ti ti-robot"></i></div>
+            Select an account and run the agent<br>to generate a live executive briefing
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ARCHITECTURE PAGE ══ -->
+  <div class="page" id="page-arch">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1>Agent architecture</h1>
+        <p>EBR Generator — two-model design, RAG pipeline, eval loop</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-title">EBR Generator Agent — end-to-end flow</div>
+          <div class="card-sub">Haiku routes · Sonnet generates · Glean index retrieves · human reviews at-risk outputs</div>
+        </div>
+      </div>
+      <div style="padding:24px">
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:24px">A small, fast model handles classification cheaply. A large model only fires when generation is needed. Retrieval happens between routing and generation — context is injected at query time, never baked into the model. This is how you keep cost-per-account manageable at 10 accounts today and 100 tomorrow.</p>
+
+        <div class="arch-layer">
+          <div class="arch-layer-title"><i class="ti ti-player-play" style="color:var(--amber)"></i> Trigger layer <span>Scheduled</span></div>
+          <div class="arch-row">
+            <div class="arch-box trigger"><i class="ti ti-clock"></i> Scheduled trigger (Mon 7am)</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box trigger"><i class="ti ti-database"></i> Pull account signals: usage, health score, last exec touch, open tickets</div>
+          </div>
+        </div>
+
+        <div class="arch-layer">
+          <div class="arch-layer-title"><i class="ti ti-git-branch" style="color:var(--glean-blue)"></i> Router layer <span>Haiku — cheap + fast</span></div>
+          <div class="arch-row">
+            <div class="arch-box model"><i class="ti ti-route"></i> Classify: at-risk / healthy / expansion</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box model"><i class="ti ti-list-check"></i> Select prompt template + retrieval scope</div>
+          </div>
+          <div class="arch-note">Classification only — no generation. Routes to the correct retrieval strategy. ~70% of inference cost savings happen here. Healthy accounts skip expensive generation entirely.</div>
+        </div>
+
+        <div class="arch-layer">
+          <div class="arch-layer-title"><i class="ti ti-search" style="color:var(--green-dark)"></i> Retrieval layer <span>RAG via Glean index</span></div>
+          <div class="arch-row">
+            <div class="arch-box rag"><i class="ti ti-search"></i> Query Glean: case studies + account history</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box rag"><i class="ti ti-filter"></i> Score + filter (threshold: 0.75)</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box rag"><i class="ti ti-stack"></i> Inject into context window</div>
+          </div>
+          <div class="arch-note">Fallback: if no chunk scores above 0.75, insert [CONTEXT PLACEHOLDER] and flag for human review. The model is never allowed to fill the gap from parametric memory — that's where hallucination lives.</div>
+        </div>
+
+        <div class="arch-layer">
+          <div class="arch-layer-title"><i class="ti ti-wand" style="color:var(--glean-blue)"></i> Generation layer <span>Sonnet · temp 0.3</span></div>
+          <div class="arch-row">
+            <div class="arch-box model"><i class="ti ti-file-text"></i> System prompt + retrieved context + account signals</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box model"><i class="ti ti-sparkles"></i> Generate structured EBR draft (JSON mode)</div>
+          </div>
+          <div class="arch-note">Guardrails enforced in system prompt: no fabricated metrics, cite sources, escalate if renewal ≤90d, output schema via JSON mode, max 350 tokens. Temperature 0.3 for consistency across rep teams.</div>
+        </div>
+
+        <div class="arch-layer">
+          <div class="arch-layer-title"><i class="ti ti-check" style="color:var(--green-dark)"></i> Output + eval layer <span>Human-in-the-loop</span></div>
+          <div class="arch-row">
+            <div class="arch-box out"><i class="ti ti-check"></i> Schema validation</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box out"><i class="ti ti-eye"></i> Human review queue (at-risk accounts only)</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-box out"><i class="ti ti-send"></i> Deliver to AOM inbox</div>
+          </div>
+          <div class="arch-note">Eval: weekly golden set of 15 accounts · scored on factual accuracy, format compliance, guardrail adherence. Regression test runs before any prompt update ships. This is the difference between a demo and a production system.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const accounts = {
+  arkwright: { name:'Arkwright Financial', health:31, seats:1200, industry:'Financial Services', trend:'-18% WoW', renewal:'90 days' },
+  solaris:   { name:'Solaris Health',      health:42, seats:3400, industry:'Healthcare',        trend:'-9% WoW',  renewal:'120 days' },
+  crestline: { name:'Crestline Capital',   health:74, seats:2100, industry:'Private Equity',    trend:'+6% WoW',  renewal:'180 days' },
+  optera:    { name:'Optera Systems',      health:88, seats:4200, industry:'Enterprise Tech',   trend:'+8% WoW',  renewal:'240 days' }
+};
+const outputLabels = { ebr:'Executive Business Review', risk:'Risk Mitigation Brief', expansion:'Expansion Opportunity Brief' };
+
+function switchPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+function goToDemo(acctId) {
+  document.getElementById('acct-select').value = acctId;
+  // update context suggestion based on account
+  const ctx = {
+    arkwright: 'Usage dropped 18% over 3 weeks. Last exec contact 47 days ago. Renewal in 90 days. Champion recently changed roles internally.',
+    solaris: 'Usage flat. No exec contact in 31 days. Renewal in 120 days. Support tickets up 40% this month.',
+    crestline: 'Usage up 6% WoW. CFO attended last QBR. Renewal in 180 days. Two new departments started using Glean this quarter.',
+    optera: 'Usage up 8% WoW. Strong exec relationship. Renewal in 240 days. Engineering team expanded Glean usage to 3 new projects.'
+  };
+  document.getElementById('acct-context').value = ctx[acctId] || '';
+  switchPage('demo', document.querySelectorAll('.nav-tab')[2]);
+}
+
+async function runAgent() {
+  const apiKey = document.getElementById('api-key').value.trim();
+  if (!apiKey) { alert('Please enter your Anthropic API key in the top nav bar.'); return; }
+
+  const acctId = document.getElementById('acct-select').value;
+  const context = document.getElementById('acct-context').value;
+  const outputType = document.getElementById('output-type').value;
+  const acct = accounts[acctId];
+  const btn = document.getElementById('run-btn');
+  const body = document.getElementById('output-body');
+  const status = document.getElementById('output-status');
+
+  btn.disabled = true;
+  status.textContent = 'Running...';
+  status.className = 'badge b-amber';
+  body.innerHTML = `<div class="thinking"><div class="dots"><span></span><span></span><span></span></div><div>Agent running · retrieving Glean context · generating briefing...</div></div>`;
+
+  const systemPrompt = `You are an AI Outcomes Manager assistant at Glean. Your job is to generate concise, structured executive briefings for enterprise customer accounts.
+
+RULES — follow these strictly:
+- Only reference metrics explicitly provided in the account context. Never fabricate usage data, CSAT scores, ROI figures, or customer quotes.
+- If renewal is 90 days or fewer, add an urgent flag in the Risk section.
+- Use exactly these section headers on their own lines: Executive Summary, Key Signals, Recommended Actions, Risk / Opportunity
+- Tone: direct, peer-to-peer executive communication. No marketing language, no jargon, no filler.
+- If context is insufficient for a section, write [NEEDS VERIFICATION] rather than guessing.
+- Maximum 300 words total.`;
+
+  const userMsg = `Account: ${acct.name}
+Industry: ${acct.industry}
+Health score: ${acct.health}/100
+Seats: ${acct.seats.toLocaleString()}
+Usage trend: ${acct.trend}
+Renewal: ${acct.renewal}
+Additional context: ${context}
+
+Generate a ${outputLabels[outputType]}.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMsg }]
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const text = data.content?.find(b => b.type === 'text')?.text || '';
+
+    const hColor = acct.health < 50 ? '#C0392B' : acct.health < 70 ? '#D4790A' : '#3A8A2A';
+    const bClass = acct.health < 50 ? 'b-red' : acct.health < 70 ? 'b-amber' : 'b-green';
+
+    let html = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+      <div><div style="font-size:15px;font-weight:600">${acct.name}</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">${outputLabels[outputType]} · Generated ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div></div>
+      <span class="badge ${bClass}">Health: ${acct.health}</span>
+    </div><div class="output-content">`;
+
+    const lines = text.split('\n');
+    let section = null, content = [];
+
+    function renderSection(title, lines) {
+      if (!title) return '';
+      let h = `<div class="out-section"><div class="out-section-title">${title}</div>`;
+      const joined = lines.join('\n').trim();
+      const parts = joined.split('\n').filter(l => l.trim());
+      let inList = false;
+      parts.forEach(line => {
+        const t = line.trim();
+        if (t.startsWith('- ') || t.startsWith('• ') || /^\d+\./.test(t)) {
+          if (!inList) { h += '<ul>'; inList = true; }
+          h += `<li>${t.replace(/^[-•]\s*|^\d+\.\s*/,'')}</li>`;
+        } else {
+          if (inList) { h += '</ul>'; inList = false; }
+          if (t) h += `<p>${t}</p>`;
+        }
+      });
+      if (inList) h += '</ul>';
+      h += '</div>';
+      return h;
+    }
+
+    lines.forEach(line => {
+      const clean = line.replace(/\*\*/g,'').replace(/^#+\s*/,'').trim();
+      if (/^(Executive Summary|Key Signals|Recommended Actions|Risk)/i.test(clean)) {
+        html += renderSection(section, content);
+        section = clean.replace(/:$/, '');
+        content = [];
+      } else {
+        content.push(line);
+      }
+    });
+    html += renderSection(section, content);
+    html += '</div>';
+
+    if (parseInt(acct.renewal) <= 90) {
+      html += `<div class="escalation-box"><i class="ti ti-alert-triangle"></i><div><strong>Guardrail triggered — renewal ≤90 days.</strong> Escalate to AE and VP Customer Success this week. Do not let this account go dark before renewal.</div></div>`;
+    }
+
+    body.innerHTML = html;
+    status.textContent = 'Complete';
+    status.className = 'badge b-green';
+  } catch (err) {
+    body.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:10px;text-align:center">
+      <div class="placeholder-icon" style="background:var(--red-bg)"><i class="ti ti-alert-circle" style="color:var(--red)"></i></div>
+      <div style="font-size:13px;font-weight:600;color:var(--red)">Agent error</div>
+      <div style="font-size:12px;color:var(--text-secondary)">${err.message}</div>
+      <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">Fallback: queue for manual review</div>
+    </div>`;
+    status.textContent = 'Error';
+    status.className = 'badge b-red';
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
